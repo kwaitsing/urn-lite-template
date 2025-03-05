@@ -1,5 +1,4 @@
-import { Elysia } from "elysia";
-import { Logestic } from "logestic";
+import { Elysia, Logestic } from "urn-development-pack";
 
 const app = new Elysia()
   .onError(({ error, set }) => {
