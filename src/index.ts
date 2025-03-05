@@ -1,4 +1,4 @@
-import { Elysia, Logestic } from "urn-development-pack";
+import { CDbi, Elysia, Logestic } from "urn-development-pack";
 
 const app = new Elysia()
   .onError(({ error, set }) => {

@@ -1,0 +1,68 @@
+= Elysia With URN.ts Lite Version
+
+== What is URN.ts Lite
+
+The vanillan URN.ts is a framework which built upon ElysiaJS, Which is great.
+
+But as the increasement of the elysia codebase, maintaing the URN.ts framework becomes extremely tricky.
+
+To solve this issue, I decided to make URN.ts a library instead of a framework, including various tools and sockets for building a robust backend directly on elysiajs.
+
+== How to init a project
+
+1. Install bun from bun.sh
+2. run `bunx urn-lite-spinup@latest <projectname>`, this will create a ready to use elysia codebase which has URN lite integrated.
+
+== Structure intrudoction
+
+Your app starts at `src/index`, this is the app entry point which means your codes start here.
+
+> URN lite by default use MVC pattern for development
+
+In the example alias, .ts is usually omitted because typescript would consider .ts as the default
+
+[col="1,1"]
+|===
+|location | example alias | description | ref
+
+|src/controller
+|@controller/user.c
+|Define a specific route for a resource (as a new elysia instance)
+|https://elysiajs.com/essential/best-practice.html#controller[Elysia Document]
+
+|src/misc
+|@misc/type
+|Whatever you want besides the main development pattern stores here, such as type and helpers
+|
+
+|src/model
+|@model/user.m
+|Where business logic located, usually contains the code that deal with the data
+|
+
+|src/schema
+|@schema/user.s
+|You should put validation schema here then extend the types of these schema to your type.ts in @misc 
+|https://elysiajs.com/essential/best-practice.html#model[Elysia Document]
+
+|===
+
+== Components Introduction
+
+[col="1,1"]
+|===
+| Name | Purpose | Documents or Example
+
+| Dbi and CDbi (class)
+| To interact with MongoDB and Redis, sanitize query and input by default
+| https://www.npmjs.com/package/databridge-pack?activeTab=code[read sourcecode]
+
+| Sch2Ts (type)
+| Turn Elysia Schemas into typescript types
+| `Sch2Ts<typeof userSchema.post>`
+
+| `@elysia/ swagger bearer cors jwt swagger` and `Logestic`
+| Various commonly used elysia official plugins and a 3rd party logger for elysiajs
+| https://elysiajs.com/plugins/overview.html[Elysia Document]
+
+|===
