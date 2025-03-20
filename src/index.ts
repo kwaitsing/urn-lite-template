@@ -2,22 +2,12 @@ import { Elysia, urnLogger } from "urn-development-pack";
 
 const app = new Elysia()
   .use(urnLogger({}))
-  .onError(({ error, set }) => {
-    if (set.status === 500) {
-      return `${error}`
-    }
-    return {
-      //@ts-ignore
-      status: error.status,
-      msg: `${error}`
-    }
-  })
-  .mapResponse(({ response, set, path }) => {
+  .mapResponse(({ response, set, path, error }) => {
     if (path.includes('/swagger')) return;
     return new Response(
       JSON.stringify({
         status: set.status,
-        ...(set.status !== 500 ? { data: response } : { msg: response })
+        ...(Number(set.status) < 400 ? { data: response } : { msg: `${error}` })
       }),
       {
         headers: {
