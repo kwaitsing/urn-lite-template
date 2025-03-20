@@ -1,6 +1,7 @@
-import { Elysia, Logestic } from "urn-development-pack";
+import { Elysia, urnLogger } from "urn-development-pack";
 
 const app = new Elysia()
+  .use(urnLogger({}))
   .onError(({ error, set }) => {
     if (set.status === 500) {
       return `${error}`
@@ -29,8 +30,7 @@ const app = new Elysia()
     // Your vaildation here
   }, (app) =>
     app
-      .use(Logestic.preset('fancy'))
-      // Load your controllers below
+    // Load your controllers below
   )
   // Routes that no vaildation process is required
   ;
