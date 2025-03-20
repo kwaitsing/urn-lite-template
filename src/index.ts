@@ -2,6 +2,13 @@ import { Elysia, urnLogger } from "urn-development-pack";
 
 const app = new Elysia()
   .use(urnLogger({}))
+  .onError(({ error }) => {
+    return {
+      //@ts-ignore
+      status: error.status,
+      msg: `${error}`
+    }
+  })
   .mapResponse(({ response, set, path, error }) => {
     if (path.includes('/swagger')) return;
     return new Response(
