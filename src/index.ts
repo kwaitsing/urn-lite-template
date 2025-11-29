@@ -9,12 +9,15 @@ const app = new Elysia()
       msg: `${error}`
     }
   })
-  .mapResponse(({ response, set, path, error }) => {
-    if (path.includes('/swagger')) return;
+  .mapResponse(({ responseValue, set, path }) => {
+    const prefixIgnore = new Set(['/openapi'])
+    if (Array.from(prefixIgnore).some(p => path.startsWith(p))) {
+      return
+    }
     return new Response(
       JSON.stringify({
         status: set.status,
-        ...(Number(set.status) < 400 ? { data: response } : { msg: `${error}` })
+        ...(Number(set.status) < 400 ? { data: responseValue } : {data: responseValue})
       }),
       {
         headers: {
