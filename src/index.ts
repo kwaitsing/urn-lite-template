@@ -2,38 +2,33 @@ import { Elysia, urnLogger } from "urn-development-pack";
 
 const app = new Elysia()
   .use(urnLogger({}))
-  .onError(({ error }) => {
+  .onAfterHandle(({ responseValue, set, path }) => {
+    if (path.startsWith('/openapi')) return
+    if (responseValue instanceof Response) return responseValue // respectful exit
+    if (!set.status) set.status = 200
     return {
-      //@ts-ignore
-      status: error.status,
-      msg: `${error}`
+      data: responseValue
     }
   })
-  .mapResponse(({ responseValue, set, path }) => {
-    const prefixIgnore = new Set(['/openapi'])
-    if (Array.from(prefixIgnore).some(p => path.startsWith(p))) {
-      return
+  .onError(({ error, set, path }) => {
+    if (path.startsWith('/openapi')) return
+    const status =
+      //@ts-expect-error error is a compound
+      typeof error.status === 'number'
+        //@ts-expect-error
+        ? (error.status as number)
+        : (set.status ?? 500)
+
+    set.status = status
+
+    return {
+      error: String(error)
     }
-    return new Response(
-      JSON.stringify({
-        status: set.status,
-        ...(Number(set.status) < 400 ? { data: responseValue } : {data: responseValue})
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8'
-        }
-      }
-    )
   })
-  .guard({
-    // Your vaildation here
-  }, (app) =>
-    app
-    // Load your controllers below
-  )
-  // Routes that no vaildation process is required
-  ;
+  // Load your Controller Instance as following
+
+  // Final Ignition
+  .listen(3000);
 
 console.log(
   `App is running at ${app.server?.hostname}:${app.server?.port}`
