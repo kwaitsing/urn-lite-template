@@ -3,7 +3,6 @@ import { Elysia, urnLogger } from "urn-development-pack";
 const app = new Elysia()
   .use(urnLogger({}))
   .onAfterHandle(({ responseValue, set, path }) => {
-    if (path.startsWith('/openapi')) return
     if (responseValue instanceof Response) return responseValue // respectful exit
     if (!set.status) set.status = 200
     return {
@@ -11,7 +10,6 @@ const app = new Elysia()
     }
   })
   .onError(({ error, set, path }) => {
-    if (path.startsWith('/openapi')) return
     const status =
       //@ts-expect-error error is a compound
       typeof error.status === 'number'
@@ -20,6 +18,9 @@ const app = new Elysia()
         : (set.status ?? 500)
 
     set.status = status
+    if (typeof error === 'object' && error !== null) {
+      return { error: error };
+    }
 
     return {
       error: String(error)
